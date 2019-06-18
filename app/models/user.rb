@@ -9,5 +9,7 @@
 #
 
 class User < ApplicationRecord
+  include AuthUtil::Jwt
+
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 end
