@@ -30,6 +30,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'annotate'
+gem 'faker'
 gem 'jwt'
 
 group :development, :test do

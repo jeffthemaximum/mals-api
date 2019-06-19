@@ -65,6 +65,8 @@ GEM
     debase-ruby_core_source (0.10.5)
     diff-lcs (1.3)
     erubi (1.8.0)
+    faker (1.9.3)
+      i18n (>= 0.7)
     ffi (1.11.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -191,6 +193,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   byebug
   debase
+  faker
   jwt
   listen (>= 3.0.5, < 3.2)
   mysql2 (>= 0.4.4, < 0.6.0)
