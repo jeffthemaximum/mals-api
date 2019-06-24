@@ -4,10 +4,6 @@ class UserSerializer < ActiveModel::Serializer
   attributes :id, :name, :jwt
 
   def jwt
-    jwt = instance_options[:jwt]
-    unless(jwt.present?)
-      jwt = get_bearer_token
-    end
-    return jwt
+    object.create_jwt
   end
 end
