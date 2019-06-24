@@ -12,9 +12,13 @@ RSpec.describe User, type: :model do
   end
 
   context "when missing name" do
-    it "should be invalid" do
-      @user.name = "    "
-      expect(@user.valid?).to eq(false)
+    it "should set name" do
+      blank_name = "    "
+      @user.name = blank_name
+      expect(@user.valid?).to eq(true)
+      expect(@user.name).not_to eq(blank_name)
+      expect(@user.name.present?).to eq(true)
+      expect(@user.save).to eq(true)
     end
   end
 
