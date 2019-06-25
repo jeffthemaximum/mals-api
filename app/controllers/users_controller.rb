@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    unless(@current_user.update(user_params))
+    unless @current_user.update(user_params)
       return render json: {errors: @current_user.errors}, status: 422
     end
 

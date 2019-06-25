@@ -81,6 +81,23 @@ RSpec.describe UsersController, type: :controller do
         @different_name = "#{@user.name}#{Faker::Name.unique.first_name}"
       end
 
+      describe "when called without name param" do
+        it "returns 200" do
+          request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
+          patch :update
+          expect(response).to have_http_status(:success)
+        end
+
+        it "sets same user name" do
+          old_name = @user.name
+          request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
+          patch :update
+          @user.reload
+
+          expect(@user.name).to eq(old_name)
+        end
+      end
+
       describe "when called with name param" do
         it "returns success response" do
           request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
