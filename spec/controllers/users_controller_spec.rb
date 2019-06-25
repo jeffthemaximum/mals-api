@@ -92,7 +92,22 @@ RSpec.describe UsersController, type: :controller do
           request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
           patch :update, params: { name: @different_name }
           @user.reload
+
           expect(@user.name).to eq(@different_name)
+        end
+
+        it "returns new name value" do
+          request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
+          patch :update, params: { name: @different_name }
+          @user.reload
+
+          parsed_body = JSON.parse(response.body)
+          expect(parsed_body["id"]).to eq(@user.id)
+          expect(parsed_body["name"]).to eq(@user.name)
+          expect(parsed_body["jwt"]).should_not be_nil
+
+          serializer = UserSerializer.new(@user)
+          expect(serializer.to_json).to eq(response.body)
         end
       end
     end
