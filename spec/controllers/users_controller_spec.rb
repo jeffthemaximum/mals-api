@@ -105,6 +105,7 @@ RSpec.describe UsersController, type: :controller do
           expect(parsed_body["id"]).to eq(@user.id)
           expect(parsed_body["name"]).to eq(@user.name)
           expect(parsed_body["jwt"]).should_not be_nil
+          expect(parsed_body["jwt"]).to eq(@jwt)
 
           serializer = UserSerializer.new(@user)
           expect(serializer.to_json).to eq(response.body)
