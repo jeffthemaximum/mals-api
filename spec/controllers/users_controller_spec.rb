@@ -54,4 +54,47 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
+  describe "PATCH #update" do
+    describe "when called without authorization header" do
+      it "throws 401" do
+        patch :update
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    describe "when called for user that doesnt exist" do
+      it "throws 401" do
+        user = User.create!
+        jwt = user.create_jwt
+        user.destroy!
+
+        request.headers.merge!({"Authorization": "Bearer #{jwt}"})
+        patch :update
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    describe "when called for valid auth header" do
+      before(:each) do
+        @user = User.create!
+        @jwt = @user.create_jwt
+        @different_name = "#{@user.name}#{Faker::Name.unique.first_name}"
+      end
+
+      describe "when called with name param" do
+        it "returns success response" do
+          request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
+          patch :update, params: { name: @different_name }
+          expect(response).to have_http_status(:success)
+        end
+
+        it "updates user name" do
+          request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
+          patch :update, params: { name: @different_name }
+          @user.reload
+          expect(@user.name).to eq(@different_name)
+        end
+      end
+    end
+  end
 end
