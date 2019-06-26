@@ -1,7 +1,8 @@
 class Chat < ApplicationRecord
   include AASM
 
-  has_and_belongs_to_many :users
+  has_many :chats_user
+  has_many :users, through: :chats_user
 
   aasm do
     state :pending, initial: true
