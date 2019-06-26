@@ -2,23 +2,34 @@ require 'rails_helper'
 
 RSpec.describe Chat, type: :model do
   before(:each) do
-    @chat = Chat.create!
+    @chat = Chat.new
     @user1 = User.create!
     @user2 = User.create!
     @user3 = User.create!
   end
 
   describe "user association" do
+    it "needs at least one user" do
+      expect{@chat.save!}.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
     it "cant add the same user twice" do
       @chat.users << @user1
-      expect{@chat.users << @user1}.to raise_error(ActiveRecord::RecordInvalid)
-      expect(@chat.users.count).to eq(1)
+      @chat.users << @user1
+      expect{@chat.save!}.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it "cant add more than 2 users" do
       @chat.users << @user1
       @chat.users << @user2
-      expect{@chat.users << @user3}.to raise_error(ActiveRecord::RecordInvalid)
+      @chat.users << @user3
+      expect{@chat.save!}.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it "can add two unique users" do
+      @chat.users << @user1
+      @chat.users << @user2
+      @chat.save!
       expect(@chat.users.count).to eq(2)
     end
   end
@@ -39,6 +50,7 @@ RSpec.describe Chat, type: :model do
       describe "with 1 associated user" do
         it "shouldnt transition to 'active'" do
           @chat.users << @user1
+          @chat.save!
           expect(@chat.users.count).to eq(1)
           expect(@chat).not_to allow_transition_to(:active)
         end
@@ -48,6 +60,7 @@ RSpec.describe Chat, type: :model do
         it "should allow transition to 'active'" do
           @chat.users << @user1
           @chat.users << @user2
+          @chat.save!
           expect(@chat.users.count).to eq(2)
           expect(@chat).to allow_transition_to(:active)
         end
