@@ -15,6 +15,7 @@ class User < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
+  has_many :chats_user
   has_many :chats, through: :chats_user
 
   private
