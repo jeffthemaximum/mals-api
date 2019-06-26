@@ -15,6 +15,8 @@ class User < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
+  has_and_belongs_to_many :chats
+
   private
 
     def set_name_or_fake
