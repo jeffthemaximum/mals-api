@@ -17,7 +17,7 @@ module Api
       private
 
       def message_params
-        params.require(:message).permit(:text, :chat_id)
+        params.permit(:chat_id, :client_id, :text, :user_id)
       end
     end
   end
