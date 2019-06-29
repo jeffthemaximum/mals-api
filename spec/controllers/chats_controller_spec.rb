@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ChatsController, type: :controller do
+RSpec.describe Api::V1::ChatsController, type: :controller do
   describe "POST #join_or_create" do
     describe "when called without authorization header" do
       it "throws 401" do
@@ -44,6 +44,14 @@ RSpec.describe ChatsController, type: :controller do
 
           serializer = ChatSerializer.new(chat)
           expect(serializer.to_json).to eq(response.body)
+        end
+
+        it "creates a pending chat" do
+          request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
+          post :join_or_create
+
+          chat = Chat.last
+          expect(chat).to have_state(:pending)
         end
       end
 

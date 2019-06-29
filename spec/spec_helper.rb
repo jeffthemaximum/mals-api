@@ -18,6 +18,21 @@ RSpec.configure do |config|
   # https://github.com/aasm/aasm#testing
   require 'aasm/rspec'
 
+  require 'simplecov'
+  SimpleCov.start do
+    add_filter '/spec/'
+    add_filter '/config/'
+    add_filter '/vendor/'
+
+    add_group 'Channels', 'app/channels'
+    add_group 'Controllers', 'app/controllers'
+    add_group 'Jobs', 'app/jobs'
+    add_group 'Lib', 'lib'
+    add_group 'Mailers', 'app/mailers'
+    add_group 'Models', 'app/models'
+    add_group 'Serializers', 'app/serializers'
+  end
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

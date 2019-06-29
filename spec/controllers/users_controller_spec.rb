@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UsersController, type: :controller do
+RSpec.describe Api::V1::UsersController, type: :controller do
 
   describe "POST #create" do
     describe "without a name param" do
