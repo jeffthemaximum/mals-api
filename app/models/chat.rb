@@ -1,4 +1,5 @@
 class Chat < ApplicationRecord
+  acts_as_paranoid
   include AASM
 
   has_many :chats_user

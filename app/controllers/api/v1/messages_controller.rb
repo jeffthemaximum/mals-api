@@ -1,10 +1,16 @@
 
 module Api
   module V1
-    class MessagesController < ApplicationController
+    class MessagesController < ApiController
       def create
         message = Message.new(message_params)
         chat = Chat.find(message_params[:chat_id])
+
+        unless chat.includes_user?(@current_user.id)
+          errors = ['unauthorized']
+          return render json: {errors: errors}, status: 422
+        end
+
         if message.save
           serialized_data = ActiveModelSerializers::Adapter::Json.new(
             MessageSerializer.new(message)

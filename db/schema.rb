@@ -10,12 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_29_171746) do
+ActiveRecord::Schema.define(version: 2019_06_29_213556) do
 
   create_table "chats", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "aasm_state"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_chats_on_deleted_at"
   end
 
   create_table "chats_users", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -24,8 +26,8 @@ ActiveRecord::Schema.define(version: 2019_06_29_171746) do
     t.index ["user_id", "chat_id"], name: "index_chats_users_on_user_id_and_chat_id"
   end
 
-  create_table "messages", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "text"
+  create_table "messages", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
+    t.string "text", limit: 191
     t.bigint "chat_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -35,8 +37,8 @@ ActiveRecord::Schema.define(version: 2019_06_29_171746) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
-  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
+  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
+    t.string "name", limit: 191
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_users_on_name", unique: true

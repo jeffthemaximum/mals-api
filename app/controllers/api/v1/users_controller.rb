@@ -1,6 +1,6 @@
 module Api
   module V1
-    class UsersController < ApplicationController
+    class UsersController < ApiController
       skip_before_action :verify_authorized, :only => [:create]
 
       def create

@@ -1,6 +1,6 @@
 module Api
   module V1
-    class ChatsController < ApplicationController
+    class ChatsController < ApiController
       def join_or_create
         chat = Chat.find_by(aasm_state: Chat.aasm.initial_state)
 

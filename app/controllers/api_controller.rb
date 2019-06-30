@@ -1,4 +1,4 @@
-class ApplicationController < ActionController::Base
+class ApiController < ActionController::API
   include AuthUtil
 
   before_action :authorize_request
