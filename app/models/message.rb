@@ -5,4 +5,10 @@ class Message < ApplicationRecord
 
   belongs_to :chat
   belongs_to :user
+
+  before_save :set_sent_at
+
+  def set_sent_at
+    self.sent_at = Time.now
+  end
 end
