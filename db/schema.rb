@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_01_151244) do
+ActiveRecord::Schema.define(version: 2019_07_01_184802) do
 
   create_table "chats", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 2019_07_01_151244) do
     t.string "name", limit: 191
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "avatar_url"
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
