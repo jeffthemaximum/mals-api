@@ -3,8 +3,10 @@ module Api
   module V1
     class MessagesController < ApiController
       def create
-        message = Message.new(message_params)
-        chat = Chat.find(message_params[:chat_id])
+        message = Message.new(create_message_params)
+        message.user = @current_user
+
+        chat = Chat.find(create_message_params[:chat_id])
 
         unless chat.includes_user?(@current_user.id)
           errors = ['unauthorized']
@@ -17,14 +19,33 @@ module Api
           ).serializable_hash
           MessagesChannel.broadcast_to chat, serialized_data
           head :ok
+        else
+          return render json: {errors: message.errors}, status: 422
+        end
+      end
+
+      def update
+        message = Message.find(update_message_params[:id])
+        message.update_attributes(update_message_params)
+        if message.save
+          serialized_data = ActiveModelSerializers::Adapter::Json.new(
+            MessageSerializer.new(message)
+          ).serializable_hash
+          MessagesChannel.broadcast_to message.chat, serialized_data
+          head :ok
+        else
+          return render json: {errors: message.errors}, status: 422
         end
       end
 
       private
+        def create_message_params
+          params.permit(:chat_id, :client_id, :text)
+        end
 
-      def message_params
-        params.permit(:chat_id, :client_id, :text, :user_id)
-      end
+        def update_message_params
+          params.permit(:delivered_at, :id)
+        end
     end
   end
 end
