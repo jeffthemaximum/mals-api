@@ -28,3 +28,4 @@
 /vendor
 /coverage
 /.DS_Store
+.env
