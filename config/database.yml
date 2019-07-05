@@ -49,6 +49,4 @@ test:
 #
 production:
   <<: *default
-  database: malj_api_production
-  username: malj_api
-  password: <%= ENV['MALJ_API_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>

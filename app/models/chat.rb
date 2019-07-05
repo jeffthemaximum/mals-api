@@ -4,6 +4,7 @@ class Chat < ApplicationRecord
 
   has_many :chats_user
   has_many :messages
+  has_many :notifications
   has_many :users, through: :chats_user
 
   validates :users, :length => { :minimum => 1, :maximum => 2 }

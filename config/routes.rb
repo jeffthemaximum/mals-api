@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       post 'users', to: 'users#create'
 
       resources :messages, only: [:create, :update]
+      resources :notifications, only: [:create]
     end
   end
 

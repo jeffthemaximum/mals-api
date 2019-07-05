@@ -18,6 +18,7 @@ class User < ApplicationRecord
   has_many :chats_user
   has_many :chats, through: :chats_user
   has_many :messages
+  has_many :notifications
 
   private
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_01_184802) do
+ActiveRecord::Schema.define(version: 2019_07_03_185028) do
 
   create_table "chats", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -39,6 +39,17 @@ ActiveRecord::Schema.define(version: 2019_07_01_184802) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
+  create_table "notifications", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+    t.integer "notification_type", null: false
+    t.bigint "user_id", null: false
+    t.bigint "chat_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chat_id"], name: "index_notifications_on_chat_id"
+    t.index ["notification_type"], name: "index_notifications_on_notification_type"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
     t.string "name", limit: 191
     t.datetime "created_at", null: false
@@ -49,4 +60,6 @@ ActiveRecord::Schema.define(version: 2019_07_01_184802) do
 
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "users"
+  add_foreign_key "notifications", "chats"
+  add_foreign_key "notifications", "users"
 end
