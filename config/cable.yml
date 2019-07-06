@@ -6,5 +6,5 @@ test:
 
 production:
   adapter: redis
-  url: <%= ENV.fetch("REDISTOGO_URL") {''} %>
+  url: <%= ENV.fetch("REDISTOGO_URL") %>
   channel_prefix: malj_api_production
