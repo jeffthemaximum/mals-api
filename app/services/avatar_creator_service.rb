@@ -1,12 +1,19 @@
 class AvatarCreatorService < ApplicationService
+  include HTTParty
+
   def initialize(user)
     @user = user
   end
 
   def call
     gender = getGender
+    url = "https://avatars.dicebear.com/v2/#{gender}/#{@user.name}.svg"
+    res = HTTParty.get(url)
 
-    "https://avatars.dicebear.com/v2/#{gender}/#{@user.name}.svg"
+    {
+      url: url,
+      svg: res.body
+    }
   end
 
   def avataaar

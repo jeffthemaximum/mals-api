@@ -33,6 +33,7 @@ gem 'active_model_serializers', '~> 0.10.0'
 gem 'activeadmin'
 gem 'annotate'
 gem 'faker'
+gem 'httparty'
 gem 'jwt'
 gem "paranoia", "~> 2.2"
 

@@ -11,7 +11,7 @@
 class User < ApplicationRecord
   include AuthUtil::Jwt
 
-  before_validation :set_name_or_fake, :set_avatar_url
+  before_validation :set_name_or_fake, :set_avatar
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
@@ -28,9 +28,13 @@ class User < ApplicationRecord
       end
     end
 
-    def set_avatar_url
+    def set_avatar
       unless(self.avatar_url.present?)
-        self.avatar_url = AvatarCreatorService.call(self)
+        avatar_data = AvatarCreatorService.call(self)
+        self.avatar_url = avatar_data[:url]
+        if (avatar_data[:svg])
+          self.avatar_file = avatar_data[:svg]
+        end
       end
     end
 
