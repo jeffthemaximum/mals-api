@@ -4,6 +4,7 @@ class Notification < ApplicationRecord
 
   enum notification_type: {
     typing: 0,
-    stopped_typing: 1
+    stopped_typing: 1,
+    unsubscribe: 2
   }
 end

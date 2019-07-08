@@ -8,5 +8,15 @@ class ChatsChannel < ApplicationCable::Channel
 
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
+    chat = current_user.chats.last
+    chat.finish
+
+    notification = Notification.new(chat: chat, notification_type: 'unsubscribe', user: current_user)
+    if notification.save
+      notification_data = ActiveModelSerializers::Adapter::Json.new(
+        NotificationSerializer.new(notification)
+      ).serializable_hash
+      NotificationsChannel.broadcast_to chat, notification_data
+    end
   end
 end
