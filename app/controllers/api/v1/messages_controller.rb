@@ -38,9 +38,22 @@ module Api
         end
       end
 
+      def index
+        if (params[:random] == 'true')
+          message = Message.order(Arel.sql('RAND()')).limit(1).first
+          return render json: message, serializer: MessageSerializer, status: :ok
+        else
+          return render json: {errors: ['missing URL param']}, status: 422
+        end
+      end
+
       private
         def create_message_params
           params.permit(:chat_id, :client_id, :text)
+        end
+
+        def index_messages_params
+          params.permit(:random)
         end
 
         def update_message_params

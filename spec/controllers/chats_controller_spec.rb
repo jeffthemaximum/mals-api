@@ -30,22 +30,6 @@ RSpec.describe Api::V1::ChatsController, type: :controller do
           expect(Chat.count).to eq(chat_count + 1)
         end
 
-        it "returns a serialized chat" do
-          request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
-          post :join_or_create
-
-          chat = Chat.last
-          parsed_body = JSON.parse(response.body)
-          expect(parsed_body["id"]).to eq(chat.id)
-          expect(parsed_body["users"].length).to eq(1)
-          expect(parsed_body["users"][0]["id"]).to eq(@user.id)
-          expect(parsed_body["users"][0]["name"]).to eq(@user.name)
-          expect(parsed_body["users"][0]["jwt"]).to be_nil
-
-          serializer = ChatSerializer.new(chat)
-          expect(serializer.to_json).to eq(response.body)
-        end
-
         it "creates a pending chat" do
           request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
           post :join_or_create
@@ -78,27 +62,6 @@ RSpec.describe Api::V1::ChatsController, type: :controller do
           request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
           post :join_or_create
           expect(Chat.count).to eq(chat_count)
-        end
-
-        it "returns a serialized chat" do
-          request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
-          post :join_or_create
-
-          parsed_body = JSON.parse(response.body)
-
-          @chat.reload
-
-          expect(parsed_body["id"]).to eq(@chat.id)
-          expect(parsed_body["users"].length).to eq(2)
-          expect(parsed_body["users"][0]["id"]).to eq(@user.id)
-          expect(parsed_body["users"][0]["name"]).to eq(@user.name)
-          expect(parsed_body["users"][0]["jwt"]).to be_nil
-          expect(parsed_body["users"][1]["id"]).to eq(@second_user.id)
-          expect(parsed_body["users"][1]["name"]).to eq(@second_user.name)
-          expect(parsed_body["users"][1]["jwt"]).to be_nil
-
-          serializer = ChatSerializer.new(@chat)
-          expect(serializer.to_json).to eq(response.body)
         end
 
         it "starts the chat" do

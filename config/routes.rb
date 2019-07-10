@@ -6,7 +6,7 @@ Rails.application.routes.draw do
       patch 'users', to: "users#update"
       post 'users', to: 'users#create'
 
-      resources :messages, only: [:create, :update]
+      resources :messages, only: [:create, :update, :index]
       resources :notifications, only: [:create]
     end
   end
