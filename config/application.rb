@@ -19,6 +19,7 @@ Bundler.require(*Rails.groups)
 
 # require lib files
 require './lib/auth_util'
+require './lib/stat_hat'
 
 module MaljApi
   class Application < Rails::Application
@@ -40,5 +41,9 @@ module MaljApi
     # https://medium.com/alturasoluciones/how-to-set-up-rails-api-app-to-use-activeadmin-79b418df8aad
     config.middleware.use Rack::MethodOverride
     config.middleware.use ActionDispatch::Flash
+
+    config.after_initialize do
+      StatsJob.perform_later
+    end
   end
 end
