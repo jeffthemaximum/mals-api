@@ -30,10 +30,12 @@ class User < ApplicationRecord
 
     def set_avatar
       unless(self.avatar_url.present?)
-        avatar_data = AvatarCreatorService.call(self)
-        self.avatar_url = avatar_data[:url]
-        if (avatar_data[:svg])
-          self.avatar_file = avatar_data[:svg]
+        unless Rails.env.test?
+          avatar_data = AvatarCreatorService.call(self)
+          self.avatar_url = avatar_data[:url]
+          if (avatar_data[:svg])
+            self.avatar_file = avatar_data[:svg]
+          end
         end
       end
     end

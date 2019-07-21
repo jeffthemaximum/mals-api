@@ -35,7 +35,10 @@ class StatService < ApplicationService
       Rails.logger.info "Logging to stathat: #{@stat_queue}"
       cached_queue = @stat_queue.dup
       @stat_queue = []
-      StatHat::API.ez_post_data(cached_queue, Rails.application.credentials.stathat_api_key)
+
+      unless Rails.env.test?
+        StatHat::API.ez_post_data(cached_queue, Rails.application.credentials.stathat_api_key)
+      end
     end
   end
 

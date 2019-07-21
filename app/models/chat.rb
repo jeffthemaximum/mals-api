@@ -21,6 +21,10 @@ class Chat < ApplicationRecord
     event :finish do
       transitions from: :active, to: :finished
     end
+
+    event :abort do
+      transitions from: :pending, to: :finished
+    end
   end
 
   def can_start?

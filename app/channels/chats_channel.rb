@@ -9,7 +9,12 @@ class ChatsChannel < ApplicationCable::Channel
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
     chat = current_user.chats.last
-    chat.finish
+
+    if chat.pending?
+      chat.abort!
+    elsif chat.active?
+      chat.finish!
+    end
 
     notification = Notification.new(chat: chat, notification_type: 'unsubscribe', user: current_user)
     if notification.save
