@@ -4,7 +4,7 @@ module Api
       skip_before_action :verify_authorized, :only => [:create]
 
       def create
-        user = User.new(user_params)
+        user = User.new(create_user_params)
 
         unless(user.save)
           return render json: {errors: user.errors}, status: 422
@@ -14,7 +14,7 @@ module Api
       end
 
       def update
-        unless @current_user.update(user_params)
+        unless @current_user.update(update_user_params)
           return render json: {errors: @current_user.errors}, status: 422
         end
 
@@ -24,14 +24,17 @@ module Api
 
       private
 
-        def user_params
-          params.require(:user).permit(:name, :latitude, :longitude)
+        def create_user_params
           if !params[:latitude] || !params[:longitude]
             location = IpLocationService.call(request.remote_ip)
             params[:latitude] = location.location.latitude
             params[:longitude] = location.location.longitude
           end
-          return params
+          return params.permit(:name, :latitude, :longitude)
+        end
+
+        def update_user_params
+          params.permit(:name)
         end
     end
   end

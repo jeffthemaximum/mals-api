@@ -5,6 +5,7 @@
 #  id          :bigint           not null, primary key
 #  avatar_file :text(65535)
 #  avatar_url  :string(255)
+#  is_admin    :boolean          default(FALSE)
 #  latitude    :decimal(10, 6)
 #  longitude   :decimal(10, 6)
 #  name        :string(191)

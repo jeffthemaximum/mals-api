@@ -2,7 +2,7 @@ module Api
   module V1
     class ChatsController < ApiController
       def join_or_create
-        chat = Chat.find_by(aasm_state: Chat.aasm.initial_state)
+        chat = Chat.by_distance(:origin => [@current_user.latitude, @current_user.longitude]).find_by(aasm_state: Chat.aasm.initial_state)
 
         if chat.present?
           if chat.includes_user?(@current_user.id)
@@ -18,6 +18,8 @@ module Api
         else
           chat = Chat.new
           chat.users << @current_user
+          chat.latitude = @current_user.latitude
+          chat.longitude = @current_user.longitude
           chat.save!
         end
 
@@ -35,6 +37,10 @@ module Api
             "current_user_#{recipient.id}",
             serialized_data
           )
+
+          distance = @current_user.distance_to(recipient)
+          text = "You're chatting with a user who's #{distance} miles away."
+          AdminMessageService.call(chat, text)
         end
 
         head :ok

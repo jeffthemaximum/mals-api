@@ -7,7 +7,7 @@ class AvatarCreatorService < ApplicationService
 
   def call
     gender = getGender
-    url = "https://avatars.dicebear.com/v2/#{gender}/#{@user.name}.svg"
+    url = "https://avatars.dicebear.com/v2/#{gender}/#{@user.name.gsub(/\s+/, "")}.svg"
     res = HTTParty.get(url)
 
     {

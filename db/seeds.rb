@@ -5,3 +5,7 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+admin_users = User.where(is_admin: true)
+admin_users.destroy_all
+admin_user = User.create!({is_admin: true, name: 'MALS admin'})

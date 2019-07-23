@@ -27,6 +27,9 @@ class Chat < ApplicationRecord
 
   validates :users, :length => { :minimum => 1, :maximum => 2 }
 
+  acts_as_mappable :lat_column_name => :latitude,
+                   :lng_column_name => :longitude
+
   aasm do
     state :pending, initial: true
     state :active
