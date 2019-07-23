@@ -25,7 +25,13 @@ module Api
       private
 
         def user_params
-          params.permit(:name)
+          params.require(:user).permit(:name, :latitude, :longitude)
+          if !params[:latitude] || !params[:longitude]
+            location = IpLocationService.call(request.remote_ip)
+            params[:latitude] = location.location.latitude
+            params[:longitude] = location.location.longitude
+          end
+          return params
         end
     end
   end
