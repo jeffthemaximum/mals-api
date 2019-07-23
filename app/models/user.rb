@@ -2,10 +2,19 @@
 #
 # Table name: users
 #
-#  id         :bigint           not null, primary key
-#  name       :string(255)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id          :bigint           not null, primary key
+#  avatar_file :text(65535)
+#  avatar_url  :string(255)
+#  latitude    :decimal(10, 6)
+#  longitude   :decimal(10, 6)
+#  name        :string(191)
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+# Indexes
+#
+#  index_users_on_latitude_and_longitude  (latitude,longitude)
+#  index_users_on_name                    (name) UNIQUE
 #
 
 class User < ApplicationRecord
@@ -20,8 +29,10 @@ class User < ApplicationRecord
   has_many :messages
   has_many :notifications
 
-  private
+  acts_as_mappable :lat_column_name => :latitude,
+                   :lng_column_name => :longitude
 
+  private
     def set_name_or_fake
       unless(self.name.present?)
         self.name = generate_fake_name

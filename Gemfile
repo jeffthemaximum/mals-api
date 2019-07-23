@@ -33,8 +33,10 @@ gem 'active_model_serializers', '~> 0.10.0'
 gem 'activeadmin'
 gem 'annotate'
 gem 'faker'
+gem 'geokit-rails'
 gem 'httparty'
 gem 'jwt'
+gem 'maxminddb'
 gem "paranoia", "~> 2.2"
 
 group :development do
