@@ -29,5 +29,3 @@
 /coverage
 /.DS_Store
 .env
-
-app/services/geoip2.mmdb
