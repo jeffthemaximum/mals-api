@@ -40,7 +40,7 @@ module Api
 
       def index
         if (params[:random] == 'true')
-          message = Message.order(Arel.sql('RAND()')).limit(1).first
+          message = Message.joins(:user).where.not( :users => { :is_admin => true } ).order(Arel.sql('RAND()')).limit(1).first
           return render json: message, serializer: MessageSerializer, status: :ok
         else
           return render json: {errors: ['missing URL param']}, status: 422

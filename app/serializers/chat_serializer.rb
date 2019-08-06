@@ -2,13 +2,14 @@
 #
 # Table name: chats
 #
-#  id         :bigint           not null, primary key
-#  aasm_state :string(255)
-#  deleted_at :datetime
-#  latitude   :decimal(10, 6)
-#  longitude  :decimal(10, 6)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id            :bigint           not null, primary key
+#  aasm_state    :string(255)
+#  deleted_at    :datetime
+#  join_attempts :integer          default(0)
+#  latitude      :decimal(10, 6)
+#  longitude     :decimal(10, 6)
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 # Indexes
 #

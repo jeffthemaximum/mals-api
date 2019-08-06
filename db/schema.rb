@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_23_195325) do
+ActiveRecord::Schema.define(version: 2019_08_03_135830) do
 
   create_table "chats", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 2019_07_23_195325) do
     t.datetime "deleted_at"
     t.decimal "latitude", precision: 10, scale: 6
     t.decimal "longitude", precision: 10, scale: 6
+    t.integer "join_attempts", default: 0
     t.index ["deleted_at"], name: "index_chats_on_deleted_at"
     t.index ["latitude", "longitude"], name: "index_chats_on_latitude_and_longitude"
   end
