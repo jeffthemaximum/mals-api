@@ -6,7 +6,7 @@ ActiveSupport::Notifications.subscribe 'process_action.action_controller' do |*a
 
   StatService.instance.enqueue(base_name, { value: value })
 
-  if (event.payload[:status] < 300)
+  if (event.payload.key?(:status) && event.payload[:status] < 300)
     count_name = "#{base_name}/success"
   else
     count_name = "#{base_name}/error"
