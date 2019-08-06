@@ -92,11 +92,6 @@ class JoinChatService < ApplicationService
           "current_user_#{recipient.id}",
           serialized_data
         )
-
-        distance = @user.distance_to(recipient)
-        text = "You're chatting with a user who's #{distance} miles away."
-        AdminMessageService.call(@chat, text)
-        AdminMessageService.call(other_chat, text)
       end
     end
 end

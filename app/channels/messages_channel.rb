@@ -1,6 +1,17 @@
 class MessagesChannel < ApplicationCable::Channel
   def subscribed
     chat = Chat.find(params[:chat])
+    
+    recipient = chat.recipient(current_user.id)
+    distance = current_user.distance_to(recipient)
+    text = "You're chatting with a user who's #{distance} miles away."
+    admin_user = User.where({is_admin: true}).first
+    message = Message.create!({chat_id: params[:chat], client_id: SecureRandom.uuid, user_id: admin_user.id, text: text})
+    serialized_data = ActiveModelSerializers::Adapter::Json.new(
+      MessageSerializer.new(message)
+    ).serializable_hash
+    transmit(serialized_data)
+
     stream_for chat
   end
 
