@@ -6,6 +6,7 @@ class StatService < ApplicationService
 
   def initialize
     @stat_queue = []
+    @max_size = 25
   end
 
   def enqueue(stat_name, options = {})
@@ -13,6 +14,8 @@ class StatService < ApplicationService
       Rails.logger.error 'Stat enqueue error. Missing stat_name.'
       return
     end
+
+    Rails.logger.info "#{ActiveSupport::LogSubscriber.new.send(:color, "Enqueueing stat:", :blue)} name: #{stat_name}; options: #{options}"
 
     if !options[:count] && !options[:value]
       Rails.logger.error "Stat enqueue error. stat_name: #{stat_name}; options: #{options}"
@@ -25,6 +28,10 @@ class StatService < ApplicationService
     elsif options[:value]
       stat_name = "mals_api/#{Rails.env}/#{stat_name}/value"
       enqueue_value(stat_name, options[:value])
+    end
+
+    if @stat_queue.length >= @max_size
+      log
     end
   end
 
