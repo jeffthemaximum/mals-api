@@ -1,12 +1,18 @@
 class JoinChatService < ApplicationService
-  def initialize(user, chat = nil)
-    @user = user
-    @chat = chat
+  def initialize(user_id, chat_id = nil)
+    @user_id = user_id
+    @chat_id = chat_id
   end
 
   def call
+    @chat = nil
+    @user = User.find @user_id
+    unless @chat_id.nil?
+      @chat = Chat.with_deleted.find_by_id @chat_id
+    end
+
     unless @chat.nil?
-      unless @chat.pending?
+      if !@chat.pending? || !@chat.deleted_at.nil?
         return
       end
 
@@ -28,26 +34,30 @@ class JoinChatService < ApplicationService
       if other_chat.nil?
         @chat.join_attempts += 1
         @chat.save!
-        JoinChatJob.set(wait: 5.seconds).perform_later(@user, @chat)
+        JoinChatJob.set(wait: 5.seconds).perform_later(@user.id, @chat.id)
       else
         recipient = other_chat.users.first
         other_chat.destroy!
-        start_chat(recipient, other_chat)
+        start_chat(recipient)
       end
     else
-      @chat = find_closest_within(5)
+      other_chat = find_closest_within(5)
 
-      if @chat.present?
-        @chat.users << @user
-        recipient = @chat.recipient(@user.id)
-        other_chat = recipient.chats.last
-        start_chat(recipient, other_chat)
-      else
-        @chat = Chat.new
-        @chat.users << @user
-        @chat.latitude, @chat.longitude = @user.latitude, @user.longitude
+      @chat = Chat.new
+      @chat.users << @user
+      @chat.latitude, @chat.longitude = @user.latitude, @user.longitude
+
+      if other_chat.present?
+        recipient = other_chat.users.first
+
+        @chat.users << recipient
         @chat.save!
-        JoinChatJob.set(wait: 5.seconds).perform_later(@user, @chat)
+
+        other_chat.destroy!
+        start_chat(recipient)
+      else
+        @chat.save!
+        JoinChatJob.set(wait: 5.seconds).perform_later(@user.id, @chat.id)
       end
     end
   end
@@ -61,7 +71,7 @@ class JoinChatService < ApplicationService
       Chat.includes(:users).where.not( :users => { :id => @user.id } ).by_distance(:origin => [@user.latitude, @user.longitude]).find_by(aasm_state: Chat.aasm.initial_state)
     end
 
-    def start_chat(recipient, other_chat)
+    def start_chat(recipient)
       unless @chat.users.exists? recipient.id
         @chat.users << recipient
       end
@@ -70,28 +80,21 @@ class JoinChatService < ApplicationService
         @chat.users << @user
       end
 
-      started = false
-      if @chat.may_start?
-        started = true
-        @chat.start!
-      end
-
+      @chat.start!
       @chat.save!
 
-      if (started == true)
-        serialized_data = ActiveModelSerializers::Adapter::Json.new(
-          ChatSerializer.new(@chat)
-        ).serializable_hash
+      serialized_data = ActiveModelSerializers::Adapter::Json.new(
+        ChatSerializer.new(@chat)
+      ).serializable_hash
 
-        ActionCable.server.broadcast(
-          "current_user_#{@user.id}",
-          serialized_data
-        )
+      ActionCable.server.broadcast(
+        "current_user_#{@user.id}",
+        serialized_data
+      )
 
-        ActionCable.server.broadcast(
-          "current_user_#{recipient.id}",
-          serialized_data
-        )
-      end
+      ActionCable.server.broadcast(
+        "current_user_#{recipient.id}",
+        serialized_data
+      )
     end
 end

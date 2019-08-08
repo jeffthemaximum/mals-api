@@ -2,7 +2,7 @@ module Api
   module V1
     class ChatsController < ApiController
       def join_or_create
-        JoinChatService.call(@current_user)
+        JoinChatService.call(@current_user.id)
         head :ok
       end
 
