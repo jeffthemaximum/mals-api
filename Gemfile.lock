@@ -101,6 +101,8 @@ GEM
       tty-pager (~> 0.12.0)
       tty-screen (~> 0.6.5)
       tty-tree (~> 0.3.0)
+    faraday (0.15.4)
+      multipart-post (>= 1.2, < 3)
     ffi (1.11.1)
     formtastic (3.1.5)
       actionpack (>= 3.2.13)
@@ -166,6 +168,7 @@ GEM
     minitest (5.11.3)
     msgpack (1.3.0)
     multi_xml (0.6.0)
+    multipart-post (2.1.1)
     mysql2 (0.5.2)
     nio4r (2.3.1)
     nokogiri (1.10.3)
@@ -296,6 +299,10 @@ GEM
     tty-screen (0.6.5)
     tty-tree (0.3.0)
     tty-which (0.4.1)
+    twilio-ruby (5.25.3)
+      faraday (~> 0.9)
+      jwt (>= 1.5, <= 2.5)
+      nokogiri (>= 1.6, < 2.0)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     unicode-display_width (1.6.0)
@@ -334,10 +341,11 @@ DEPENDENCIES
   simplecov
   spring
   spring-watcher-listen (~> 2.0.0)
+  twilio-ruby
   tzinfo-data
 
 RUBY VERSION
    ruby 2.6.0p0
 
 BUNDLED WITH
-   1.17.2
+   1.17.3

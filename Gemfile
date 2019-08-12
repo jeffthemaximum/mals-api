@@ -38,6 +38,7 @@ gem 'httparty'
 gem 'jwt'
 gem 'maxminddb'
 gem "paranoia", "~> 2.2"
+gem 'twilio-ruby'
 
 group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
