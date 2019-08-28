@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_03_135830) do
+ActiveRecord::Schema.define(version: 2019_08_26_190142) do
 
   create_table "chats", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -28,6 +28,33 @@ ActiveRecord::Schema.define(version: 2019_08_03_135830) do
     t.bigint "user_id", null: false
     t.bigint "chat_id", null: false
     t.index ["user_id", "chat_id"], name: "index_chats_users_on_user_id_and_chat_id"
+  end
+
+  create_table "devices", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+    t.string "brand"
+    t.string "build_id"
+    t.string "build_number"
+    t.string "bundle_id"
+    t.string "carrier"
+    t.string "device"
+    t.string "device_country"
+    t.string "device_id"
+    t.string "device_name"
+    t.string "fingerprint"
+    t.integer "first_install_time"
+    t.string "install_referrer"
+    t.string "manufacturer"
+    t.string "phone_number"
+    t.string "readable_version"
+    t.string "serial_number"
+    t.string "system_version"
+    t.string "timezone"
+    t.string "unique_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["unique_id"], name: "index_devices_on_unique_id"
+    t.index ["user_id"], name: "index_devices_on_user_id"
   end
 
   create_table "messages", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
@@ -67,6 +94,7 @@ ActiveRecord::Schema.define(version: 2019_08_03_135830) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
+  add_foreign_key "devices", "users"
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "users"
   add_foreign_key "notifications", "chats"

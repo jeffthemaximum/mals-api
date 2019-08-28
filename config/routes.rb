@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       patch 'users', to: "users#update"
       post 'users', to: 'users#create'
 
+      post 'devices', to: 'devices#get_or_create'
       resources :messages, only: [:create, :update, :index]
       resources :notifications, only: [:create]
     end
