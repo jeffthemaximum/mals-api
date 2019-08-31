@@ -11,6 +11,7 @@
 #  device_name        :string(255)
 #  fingerprint        :string(255)
 #  first_install_time :integer
+#  has_accepted_eula  :boolean          default(FALSE)
 #  install_referrer   :string(255)
 #  manufacturer       :string(255)
 #  phone_number       :string(255)
