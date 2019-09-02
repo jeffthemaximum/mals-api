@@ -25,20 +25,32 @@
 #  bundle_id          :string(255)
 #  device_id          :string(255)
 #  unique_id          :string(255)
-#  user_id            :bigint
 #
 # Indexes
 #
 #  index_devices_on_unique_id  (unique_id)
-#  index_devices_on_user_id    (user_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (user_id => users.id)
 #
 
 require 'rails_helper'
 
 RSpec.describe Device, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  before(:each) do
+    @device = Device.new
+    @user1 = User.create!
+    @user2 = User.create!
+    @user3 = User.create!
+  end
+
+  it "cant add the same user twice" do
+    @device.users << @user1
+    @device.users << @user1
+    expect{@device.save!}.to raise_error(ActiveRecord::RecordInvalid)
+  end
+
+  it "can add two unique users" do
+    @device.users << @user1
+    @device.users << @user2
+    @device.save!
+    expect(@device.users.count).to eq(2)
+  end
 end

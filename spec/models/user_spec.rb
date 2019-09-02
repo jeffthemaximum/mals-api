@@ -50,4 +50,25 @@ RSpec.describe User, type: :model do
       expect(dupe_user.valid?).to eq(false)
     end
   end
+
+  describe 'devices association' do
+    before(:each) do
+      @device1 = Device.create!
+      @device2 = Device.create!
+      @user1 = User.new
+    end
+
+    it 'cant add the same device twice' do
+      @user1.devices << @device1
+      @user1.devices << @device1
+      expect{@user1.save!}.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it "can add two unique devices" do
+      @user1.devices << @device1
+      @user1.devices << @device2
+      @user1.save!
+      expect(@user1.devices.count).to eq(2)
+    end
+  end
 end

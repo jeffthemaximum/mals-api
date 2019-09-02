@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_31_142149) do
+ActiveRecord::Schema.define(version: 2019_09_01_210849) do
 
   create_table "chats", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 2019_08_31_142149) do
     t.index ["user_id", "chat_id"], name: "index_chats_users_on_user_id_and_chat_id"
   end
 
-  create_table "devices", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "devices", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "brand"
     t.string "build_id"
     t.string "build_number"
@@ -50,12 +50,16 @@ ActiveRecord::Schema.define(version: 2019_08_31_142149) do
     t.string "system_version"
     t.string "timezone"
     t.string "unique_id"
-    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "has_accepted_eula", default: false
     t.index ["unique_id"], name: "index_devices_on_unique_id"
-    t.index ["user_id"], name: "index_devices_on_user_id"
+  end
+
+  create_table "devices_users", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "device_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "device_id"], name: "index_devices_users_on_user_id_and_device_id"
   end
 
   create_table "messages", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
@@ -95,7 +99,6 @@ ActiveRecord::Schema.define(version: 2019_08_31_142149) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
-  add_foreign_key "devices", "users"
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "users"
   add_foreign_key "notifications", "chats"

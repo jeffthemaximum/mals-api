@@ -25,16 +25,10 @@
 #  bundle_id          :string(255)
 #  device_id          :string(255)
 #  unique_id          :string(255)
-#  user_id            :bigint
 #
 # Indexes
 #
 #  index_devices_on_unique_id  (unique_id)
-#  index_devices_on_user_id    (user_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (user_id => users.id)
 #
 
 class DeviceSerializer < ActiveModel::Serializer
