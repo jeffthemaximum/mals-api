@@ -6,6 +6,11 @@ module Api
       def create
         user = User.new(create_user_params)
 
+        unless params[:device_unique_id].nil?
+          device = Device.find_by(unique_id: params[:device_unique_id])
+          user.devices << device
+        end
+
         unless(user.save)
           return render json: {errors: user.errors}, status: 422
         end

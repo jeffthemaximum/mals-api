@@ -32,6 +32,8 @@
 #
 
 class Device < ApplicationRecord
+  validates :unique_id, uniqueness: true
+
   has_many :devices_user
 
   has_many :users, through: :devices_user
