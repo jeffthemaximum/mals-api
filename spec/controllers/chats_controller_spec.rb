@@ -164,5 +164,20 @@ RSpec.describe Api::V1::ChatsController, type: :controller do
         expect(@chat.deleted?).to eq(true)
       end
     end
+
+    describe "when user posting with chat_id and content" do
+      it "creates new report with content linked to requesting user" do
+        reports = Report.where({ user_id: @user_in_chat.id })
+        expect(reports.length).to eq(0)
+
+        content = 'hello plz ban this fool'
+        request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
+        post :report, params: { id: @chat.id, content: content }
+
+        reports = Report.where({ user_id: @user_in_chat.id })
+        expect(reports.length).to eq(1)
+        expect(reports[0].content).to eq(content)
+      end
+    end
   end
 end
