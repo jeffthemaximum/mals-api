@@ -22,7 +22,7 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   before(:each) do
-    @user = User.new(name: 'jeff')
+    @user = build(:user)
   end
 
   context "creating a valid new user" do
@@ -53,9 +53,9 @@ RSpec.describe User, type: :model do
 
   describe 'devices association' do
     before(:each) do
-      @device1 = Device.create!
-      @device2 = Device.create!
-      @user1 = User.new
+      @device1 = build(:device)
+      @device2 = build(:device)
+      @user1 = build(:user)
     end
 
     it 'cant add the same device twice' do

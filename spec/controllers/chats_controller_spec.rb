@@ -105,4 +105,64 @@ RSpec.describe Api::V1::ChatsController, type: :controller do
       end
     end
   end
+
+  describe "POST #report" do
+    before(:each) do
+      @chat = FactoryBot.create(:started_chat)
+      @user_in_chat = @chat.users.first
+      @recipient_in_chat = @chat.users[1]
+      expect(@user_in_chat.id).not_to eq(@recipient_in_chat.id)
+
+      @jwt = @user_in_chat.create_jwt
+    end
+
+    describe "when user posting with chat_id" do
+      it "returns 200" do
+        request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
+        post :report, params: { id: @chat.id }
+        expect(response).to have_http_status(200)
+      end
+
+      it "creates new report linked to requesting user" do
+        reports = Report.where({ user_id: @user_in_chat.id })
+        expect(reports.length).to eq(0)
+
+        request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
+        post :report, params: { id: @chat.id }
+
+        reports = Report.where({ user_id: @user_in_chat.id })
+        expect(reports.length).to eq(1)
+      end
+
+      it "blocks users from eachother" do
+        blocks_for_user = @user_in_chat.find_blocks
+        expect(blocks_for_user.length).to eq(0)
+
+        blocks_for_recipient = @recipient_in_chat.find_blocks
+        expect(blocks_for_recipient.length).to eq(0)
+
+        request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
+        post :report, params: { id: @chat.id }
+
+        blocks_for_user = @user_in_chat.find_blocks
+        expect(blocks_for_user.length).to eq(1)
+        expect(blocks_for_user[0].id).to eq(@recipient_in_chat.id)
+
+        blocks_for_recipient = @recipient_in_chat.find_blocks
+        expect(blocks_for_recipient.length).to eq(1)
+        expect(blocks_for_recipient[0].id).to eq(@user_in_chat.id)
+      end
+
+      it "deletes chat" do
+        expect(@chat.deleted?).to eq(false)
+
+        request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
+        post :report, params: { id: @chat.id }
+
+        @chat = Chat.with_deleted.find(@chat.id)
+
+        expect(@chat.deleted?).to eq(true)
+      end
+    end
+  end
 end

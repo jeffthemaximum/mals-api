@@ -74,11 +74,19 @@ class JoinChatService < ApplicationService
 
   private
     def find_closest_within(n_miles)
-      Chat.includes(:users).where.not( :users => { :id => @user.id } ).within( n_miles, :origin => [@user.latitude, @user.longitude] ).find_by(aasm_state: Chat.aasm.initial_state)
+      Chat
+        .includes(:users)
+        .where.not( :users => { :id => not_ids } )
+        .within( n_miles, :origin => [@user.latitude, @user.longitude] )
+        .find_by(aasm_state: Chat.aasm.initial_state)
     end
 
     def find_closest
-      Chat.includes(:users).where.not( :users => { :id => @user.id } ).by_distance(:origin => [@user.latitude, @user.longitude]).find_by(aasm_state: Chat.aasm.initial_state)
+      Chat
+        .includes(:users)
+        .where.not( :users => { :id => not_ids } )
+        .by_distance(:origin => [@user.latitude, @user.longitude])
+        .find_by(aasm_state: Chat.aasm.initial_state)
     end
 
     def maybe_text_me(join_attempts)
@@ -86,6 +94,11 @@ class JoinChatService < ApplicationService
         message = 'Get on chat, Jeff, someone is using your crap!'
         SendTextService.call(message, Rails.application.credentials.my_phone_number)
       end
+    end
+
+    def not_ids
+      blocked_user_ids = @user.find_blocks.map{ |user| user.id }
+      ([@user.id] << blocked_user_ids).flatten!
     end
 
     def start_chat(recipient)

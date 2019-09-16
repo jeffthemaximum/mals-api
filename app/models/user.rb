@@ -35,6 +35,31 @@ class User < ApplicationRecord
   acts_as_mappable :lat_column_name => :latitude,
                    :lng_column_name => :longitude
 
+  def block!(user_id)
+    user_to_block = User.find(user_id)
+    bu = BlockedUser.new(user_1_id: self.id, user_2_id: user_to_block.id)
+    bu.save!
+  end
+
+  def find_blocks
+    blocked_users = []
+
+    has_blocked = BlockedUser.where({ user_1_id: self.id })
+    if has_blocked.length > 0
+      users = has_blocked.map{ |bu| User.find(bu.user_2_id) }
+      (blocked_users << users).flatten!
+    end
+
+
+    has_been_blocked = BlockedUser.where({ user_2_id: self.id })
+    if has_been_blocked.length > 0
+      users = has_been_blocked.map{ |bu| User.find(bu.user_1_id) }
+      (blocked_users << users).flatten!
+    end
+
+    return blocked_users
+  end
+
   private
     def set_name_or_fake
       unless(self.name.present?)

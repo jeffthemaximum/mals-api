@@ -35,10 +35,10 @@ require 'rails_helper'
 
 RSpec.describe Device, type: :model do
   before(:each) do
-    @device = Device.new
-    @user1 = User.create!
-    @user2 = User.create!
-    @user3 = User.create!
+    @device = build(:device)
+    @user1 = build(:user)
+    @user2 = build(:user)
+    @user3 = build(:user)
   end
 
   it "cant add the same user twice" do

@@ -22,9 +22,9 @@ require 'rails_helper'
 RSpec.describe Chat, type: :model do
   before(:each) do
     @chat = Chat.new
-    @user1 = User.create!
-    @user2 = User.create!
-    @user3 = User.create!
+    @user1 = build(:user)
+    @user2 = build(:user)
+    @user3 = build(:user)
   end
 
   describe "user association" do

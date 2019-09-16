@@ -24,9 +24,30 @@ module Api
         head :ok
       end
 
+      def report
+        chat = Chat.find(report_params[:id])
+
+        unless chat.includes_user?(@current_user.id)
+          errors = ['unauthorized']
+          return render json: {errors: errors}, status: 422
+        end
+
+        report = Report.new(chat_id: chat.id, content: report_params[:content], user_id: @current_user.id)
+
+        unless(report.save)
+          return render json: {errors: user.errors}, status: 422
+        end
+
+        render json: report, serializer: ReportSerializer, status: :ok
+      end
+
       private
         def leave_params
           params.permit(:id)
+        end
+
+        def report_params
+          params.permit(:id, :content)
         end
     end
   end

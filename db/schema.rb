@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_01_210849) do
+ActiveRecord::Schema.define(version: 2019_09_16_171652) do
+
+  create_table "blocked_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_1_id"
+    t.bigint "user_2_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_1_id"], name: "index_blocked_users_on_user_1_id"
+    t.index ["user_2_id"], name: "index_blocked_users_on_user_2_id"
+  end
 
   create_table "chats", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -86,6 +95,16 @@ ActiveRecord::Schema.define(version: 2019_09_01_210849) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
+    t.bigint "chat_id"
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["chat_id"], name: "index_reports_on_chat_id"
+    t.index ["user_id"], name: "index_reports_on_user_id"
+  end
+
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
     t.string "name", limit: 191
     t.datetime "created_at", null: false
@@ -99,8 +118,12 @@ ActiveRecord::Schema.define(version: 2019_09_01_210849) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
+  add_foreign_key "blocked_users", "users", column: "user_1_id"
+  add_foreign_key "blocked_users", "users", column: "user_2_id"
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "users"
   add_foreign_key "notifications", "chats"
   add_foreign_key "notifications", "users"
+  add_foreign_key "reports", "chats"
+  add_foreign_key "reports", "users"
 end
