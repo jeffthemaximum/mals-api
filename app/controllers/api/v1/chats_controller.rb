@@ -25,7 +25,12 @@ module Api
       end
 
       def report
-        chat = Chat.find(report_params[:id])
+        begin
+          chat = Chat.find(report_params[:id])
+        rescue ActiveRecord::RecordNotFound => e
+          StatService.instance.enqueue('ChatsController.report.chat_not_found', { count: 1 })
+          return render json: {}, status: :ok
+        end
 
         unless chat.includes_user?(@current_user.id)
           errors = ['unauthorized']
