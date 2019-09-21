@@ -28,6 +28,8 @@ module Api
         begin
           chat = Chat.find(report_params[:id])
         rescue ActiveRecord::RecordNotFound => e
+          # Chat won't be found when second user reports the same chat,
+          # because Chat is soft-deleted when first report happens.
           StatService.instance.enqueue('ChatsController.report.chat_not_found', { count: 1 })
           return render json: {}, status: :ok
         end

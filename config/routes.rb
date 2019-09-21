@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       post 'chats/:id/leave', to: 'chats#leave'
       post 'chats/:id/report', to: 'chats#report'
 
+      get 'users', to: 'users#show'
       patch 'users', to: "users#update"
       post 'users', to: 'users#create'
 

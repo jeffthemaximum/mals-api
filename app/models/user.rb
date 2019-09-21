@@ -83,7 +83,7 @@ class User < ApplicationRecord
       fake_name = Faker::Name.unique.first_name
       existing_user = User.find_by name: fake_name
       while (existing_user.present?)
-        number = Faker::Number.number(4)
+        number = Faker::Number.number(1)
         fake_name = "#{fake_name}#{number}"
         existing_user = User.find_by name: fake_name
       end

@@ -6,8 +6,8 @@ module Api
       def create
         user = User.new(create_user_params)
 
-        unless params[:device_unique_id].nil?
-          device = Device.find_by(unique_id: params[:device_unique_id])
+        unless params[:unique_id].nil?
+          device = Device.find_by(unique_id: params[:unique_id])
           user.devices << device
         end
 
@@ -16,6 +16,10 @@ module Api
         end
 
         render json: user, serializer: UserSerializer, status: :ok
+      end
+
+      def show
+        render json: @current_user, serializer: UserSerializer, status: :ok
       end
 
       def update
