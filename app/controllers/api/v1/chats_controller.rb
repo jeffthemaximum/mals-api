@@ -1,45 +1,25 @@
 module Api
   module V1
     class ChatsController < ApiController
+      before_action :fetch_chat, :only => [:abort, :report]
+
       def join_or_create
         JoinChatService.call(@current_user.id)
         head :ok
       end
 
-      def leave
-        # currently unused by mals_app
-        chat = Chat.find(leave_params[:id])
-
-        unless chat.includes_user?(@current_user.id)
-          errors = ['unauthorized']
-          return render json: {errors: errors}, status: 422
-        end
-
-        if chat.pending?
-          chat.abort!
-        elsif chat.active?
-          chat.finish!
+      def abort
+        if @chat.pending?
+          @chat.abort!
+        elsif @chat.active?
+          @chat.finish!
         end
 
         head :ok
       end
 
       def report
-        begin
-          chat = Chat.find(report_params[:id])
-        rescue ActiveRecord::RecordNotFound => e
-          # Chat won't be found when second user reports the same chat,
-          # because Chat is soft-deleted when first report happens.
-          StatService.instance.enqueue('ChatsController.report.chat_not_found', { count: 1 })
-          return render json: {}, status: :ok
-        end
-
-        unless chat.includes_user?(@current_user.id)
-          errors = ['unauthorized']
-          return render json: {errors: errors}, status: 422
-        end
-
-        report = Report.new(chat_id: chat.id, content: report_params[:content], user_id: @current_user.id)
+        report = Report.new(chat_id: @chat.id, content: report_params[:content], user_id: @current_user.id)
 
         unless(report.save)
           return render json: {errors: user.errors}, status: 422
@@ -49,7 +29,22 @@ module Api
       end
 
       private
-        def leave_params
+        def fetch_chat
+          begin
+            @chat = Chat.find(params[:id])
+          rescue ActiveRecord::RecordNotFound => e
+            StatService.instance.enqueue('ChatsController.chat_not_found', { count: 1 })
+            errors = ['Invalid chat_id']
+            return render json: {errors: errors}, status: 422
+          end
+
+          unless @chat.includes_user?(@current_user.id)
+            errors = ['unauthorized']
+            return render json: {errors: errors}, status: 422
+          end
+        end
+
+        def abort_params
           params.permit(:id)
         end
 

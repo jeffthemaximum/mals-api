@@ -41,7 +41,7 @@ RSpec.describe Api::V1::ChatsController, type: :controller do
     end
   end
 
-  describe "POST #leave" do
+  describe "POST #abort" do
     before(:each) do
       @pending_chat = FactoryBot.create(:chat)
       @user_in_pending_chat = @pending_chat.users.first
@@ -51,7 +51,7 @@ RSpec.describe Api::V1::ChatsController, type: :controller do
 
     describe "when called without authorization header" do
       it "throws 401" do
-        post :leave, params: { id: @pending_chat.id }
+        post :abort, params: { id: @pending_chat.id }
         expect(response).to have_http_status(401)
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe Api::V1::ChatsController, type: :controller do
         it "returns 422" do
           other_chat = FactoryBot.create(:chat)
           request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
-          post :leave, params: { id: other_chat.id }
+          post :abort, params: { id: other_chat.id }
           expect(response).to have_http_status(422)
         end
       end
@@ -69,13 +69,13 @@ RSpec.describe Api::V1::ChatsController, type: :controller do
       describe "when requesting pending chat" do
         it "returns 200" do
           request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
-          post :leave, params: { id: @pending_chat.id }
+          post :abort, params: { id: @pending_chat.id }
           expect(response).to have_http_status(200)
         end
 
         it "marks chat as finished" do
           request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
-          post :leave, params: { id: @pending_chat.id }
+          post :abort, params: { id: @pending_chat.id }
           @pending_chat.reload
           expect(@pending_chat).to have_state(:finished)
         end
@@ -92,13 +92,13 @@ RSpec.describe Api::V1::ChatsController, type: :controller do
 
         it "returns 200" do
           request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
-          post :leave, params: { id: @active_chat.id }
+          post :abort, params: { id: @active_chat.id }
           expect(response).to have_http_status(200)
         end
 
         it "marks chat as finished" do
           request.headers.merge!({"Authorization": "Bearer #{@jwt}"})
-          post :leave, params: { id: @active_chat.id }
+          post :abort, params: { id: @active_chat.id }
           @active_chat.reload
           expect(@active_chat).to have_state(:finished)
         end

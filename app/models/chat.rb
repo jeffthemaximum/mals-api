@@ -20,6 +20,7 @@
 class Chat < ApplicationRecord
   acts_as_paranoid
   include AASM
+  include ActionView::Helpers::NumberHelper
 
   has_many :chats_user
   has_many :messages
@@ -51,6 +52,10 @@ class Chat < ApplicationRecord
 
   def can_start?
     users.count == 2
+  end
+
+  def distance
+    number_with_precision(self.users[0].distance_to(self.users[1]), :precision => 3)
   end
 
   def includes_user?(current_user_id)

@@ -10,13 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_16_171652) do
+ActiveRecord::Schema.define(version: 2019_09_30_210846) do
 
-  create_table "blocked_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "blocked_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "user_1_id"
     t.bigint "user_2_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "blocked_type", default: 0
+    t.datetime "deleted_at"
+    t.index ["blocked_type"], name: "index_blocked_users_on_blocked_type"
+    t.index ["deleted_at"], name: "index_blocked_users_on_deleted_at"
     t.index ["user_1_id"], name: "index_blocked_users_on_user_1_id"
     t.index ["user_2_id"], name: "index_blocked_users_on_user_2_id"
   end
@@ -39,7 +43,7 @@ ActiveRecord::Schema.define(version: 2019_09_16_171652) do
     t.index ["user_id", "chat_id"], name: "index_chats_users_on_user_id_and_chat_id"
   end
 
-  create_table "devices", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "devices", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "brand"
     t.string "build_id"
     t.string "build_number"
@@ -65,7 +69,7 @@ ActiveRecord::Schema.define(version: 2019_09_16_171652) do
     t.index ["unique_id"], name: "index_devices_on_unique_id"
   end
 
-  create_table "devices_users", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "devices_users", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "device_id", null: false
     t.bigint "user_id", null: false
     t.index ["user_id", "device_id"], name: "index_devices_users_on_user_id_and_device_id"

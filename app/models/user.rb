@@ -60,6 +60,14 @@ class User < ApplicationRecord
     return blocked_users
   end
 
+  def hide!(user_id)
+    user_to_hide = User.find(user_id)
+    bu = BlockedUser.new(user_1_id: self.id, user_2_id: user_to_hide.id)
+    bu.save!
+    bu.hidden!
+    HiddenUsersJob.set(wait: 5.minute).perform_later(bu.id)
+  end
+
   private
     def set_name_or_fake
       unless(self.name.present?)

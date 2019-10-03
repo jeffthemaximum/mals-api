@@ -18,12 +18,16 @@
 #
 
 class ChatSerializer < ActiveModel::Serializer
-  attributes :id, :users
+  attributes :id, :users, :distance
   has_many :messages
 
   def users
     object.users.map do |user|
       ::UserSerializer.new(user, include_jwt: false).attributes
     end
+  end
+
+  def distance
+    object.distance
   end
 end

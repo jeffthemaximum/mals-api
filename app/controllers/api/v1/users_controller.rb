@@ -18,6 +18,11 @@ module Api
         render json: user, serializer: UserSerializer, status: :ok
       end
 
+      def hide
+        @current_user.hide!(params[:id])
+        head :ok
+      end
+
       def show
         render json: @current_user, serializer: UserSerializer, status: :ok
       end
