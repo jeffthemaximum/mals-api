@@ -28,6 +28,26 @@ module Api
       end
 
       def update
+        if update_user_params[:avatar_file] || update_user_params[:avatar_url]
+          if update_user_params[:avatar_file]
+            @current_user.avatar_file = update_user_params[:avatar_file]
+            @current_user.save!
+          end
+
+          if update_user_params[:avatar_url]
+            @current_user.avatar_url = update_user_params[:avatar_url]
+            @current_user.save!
+          end
+
+          return render json: @current_user, serializer: UserSerializer, status: :ok
+        end
+
+        if update_user_params[:avatar]
+          name = Faker::Name.unique.first_name
+          @current_user.update_avatar(name)
+          return render json: @current_user, serializer: UserSerializer, status: :ok
+        end
+
         unless @current_user.update(update_user_params)
           return render json: {errors: @current_user.errors}, status: 422
         end
@@ -48,7 +68,7 @@ module Api
         end
 
         def update_user_params
-          params.permit(:name)
+          params.permit(:avatar, :avatar_file, :avatar_url, :name)
         end
     end
   end

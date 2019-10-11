@@ -68,25 +68,22 @@ class User < ApplicationRecord
     HiddenUsersJob.set(wait: 5.minute).perform_later(bu.id)
   end
 
+  def update_avatar(name = self.name)
+    unless Rails.env.test?
+      avatar_data = AvatarCreatorService.call(name)
+      self.avatar_url = avatar_data[:url]
+      if (avatar_data[:svg])
+        self.avatar_file = avatar_data[:svg]
+      end
+    end
+  end
+
+  def update_avatar!
+    self.update_avatar
+    self.save!
+  end
+
   private
-    def set_name_or_fake
-      unless(self.name.present?)
-        self.name = generate_fake_name
-      end
-    end
-
-    def set_avatar
-      unless(self.avatar_url.present?)
-        unless Rails.env.test?
-          avatar_data = AvatarCreatorService.call(self)
-          self.avatar_url = avatar_data[:url]
-          if (avatar_data[:svg])
-            self.avatar_file = avatar_data[:svg]
-          end
-        end
-      end
-    end
-
     def generate_fake_name
       fake_name = Faker::Name.unique.first_name
       existing_user = User.find_by name: fake_name
@@ -96,5 +93,17 @@ class User < ApplicationRecord
         existing_user = User.find_by name: fake_name
       end
       return fake_name
+    end
+
+    def set_avatar
+      unless(self.avatar_url.present?)
+        self.update_avatar
+      end
+    end
+
+    def set_name_or_fake
+      unless(self.name.present?)
+        self.name = generate_fake_name
+      end
     end
 end
