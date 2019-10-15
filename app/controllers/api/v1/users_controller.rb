@@ -31,14 +31,17 @@ module Api
         if update_user_params[:avatar_file] || update_user_params[:avatar_url]
           if update_user_params[:avatar_file]
             @current_user.avatar_file = update_user_params[:avatar_file]
-            @current_user.save!
           end
 
           if update_user_params[:avatar_url]
             @current_user.avatar_url = update_user_params[:avatar_url]
-            @current_user.save!
           end
 
+          if update_user_params[:name]
+            @current_user.name = update_user_params[:name]
+          end
+
+          @current_user.save!
           return render json: @current_user, serializer: UserSerializer, status: :ok
         end
 
@@ -68,7 +71,7 @@ module Api
         end
 
         def update_user_params
-          params.permit(:avatar, :avatar_file, :avatar_url, :name)
+          params.permit(:avatar, :avatar_file, :avatar_url, :latitude, :longitude, :name)
         end
     end
   end
