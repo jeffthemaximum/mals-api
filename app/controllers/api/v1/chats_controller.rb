@@ -4,6 +4,8 @@ module Api
       before_action :fetch_chat, :only => [:abort, :report]
 
       def join_or_create
+        message = 'Get on chat, Jeff, someone is trying to chat!'
+        SendTextService.call(message, Rails.application.credentials.my_phone_number)
         JoinChatService.call(@current_user.id)
         head :ok
       end

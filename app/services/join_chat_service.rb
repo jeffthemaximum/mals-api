@@ -91,7 +91,7 @@ class JoinChatService < ApplicationService
 
     def maybe_text_me(join_attempts)
       if (join_attempts == @text_me_limit)
-        message = 'Get on chat, Jeff, someone is using your crap!'
+        message = 'Get on chat, Jeff, someone has been waiting forever!'
         SendTextService.call(message, Rails.application.credentials.my_phone_number)
       end
     end
