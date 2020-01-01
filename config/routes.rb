@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
+      get 'chats', to: 'chats#index'
       post 'chats', to: 'chats#join_or_create'
       post 'chats/:id/abort', to: 'chats#abort'
+      post 'chats/:id/block', to: 'chats#block'
       post 'chats/:id/report', to: 'chats#report'
 
       get 'users', to: 'users#show'

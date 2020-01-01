@@ -110,8 +110,14 @@ class JoinChatService < ApplicationService
         @chat.users << @user
       end
 
-      @chat.start!
-      @chat.save!
+      most_recent_mutual_chat = @user.most_recent_recipient_chat(recipient.id)
+      unless most_recent_mutual_chat.nil?
+        @chat.destroy!
+        @chat = most_recent_mutual_chat
+      else
+        @chat.start!
+        @chat.save!
+      end
 
       serialized_data = ActiveModelSerializers::Adapter::Json.new(
         ChatSerializer.new(@chat)

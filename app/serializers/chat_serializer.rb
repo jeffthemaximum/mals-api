@@ -19,7 +19,7 @@
 
 class ChatSerializer < ActiveModel::Serializer
   attributes :id, :users, :distance
-  has_many :messages
+  has_many :messages, serializer: MessageSerializer
 
   def users
     object.users.map do |user|

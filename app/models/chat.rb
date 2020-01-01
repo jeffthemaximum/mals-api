@@ -55,7 +55,11 @@ class Chat < ApplicationRecord
   end
 
   def distance
-    number_with_precision(self.users[0].distance_to(self.users[1]), :precision => 3)
+    begin
+      number_with_precision(self.users[0].distance_to(self.users[1]), :precision => 3)
+    rescue
+      0
+    end
   end
 
   def includes_user?(current_user_id)

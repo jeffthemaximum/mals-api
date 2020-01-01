@@ -68,6 +68,28 @@ class User < ApplicationRecord
     HiddenUsersJob.set(wait: 5.minute).perform_later(bu.id)
   end
 
+  def most_recent_recipient_chat(recipient_id)
+    # TODO do this without looping over all chats
+    all_chats = self
+      .chats
+      .includes(:messages)
+      .order('chats.created_at DESC')
+      .order('messages.created_at DESC')
+      .where.not(aasm_state: Chat.aasm.initial_state)
+
+    for chat in all_chats do
+      recipient = chat.recipient(self.id)
+
+      if recipient
+        if recipient.id == recipient_id
+          return chat
+        end
+      end
+    end
+
+    return nil
+  end
+
   def update_avatar(name = self.name)
     unless Rails.env.test?
       avatar_data = AvatarCreatorService.call(name)

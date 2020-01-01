@@ -22,7 +22,11 @@ class UserSerializer < ActiveModel::Serializer
   include AuthUtil
 
   attributes :id, :name, :jwt, :avatar_url, :avatar_file, :created_at, :updated_at, :latitude, :longitude
-  attributes :jwt
+  attributes :jwt, :chats_count
+
+  def chats_count
+    object.chats.count
+  end
 
   def jwt
     object.create_jwt
