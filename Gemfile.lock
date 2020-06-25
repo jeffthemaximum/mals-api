@@ -182,7 +182,7 @@ GEM
       equatable (~> 0.6)
       tty-color (~> 0.5)
     puma (3.12.1)
-    rack (2.0.7)
+    rack (2.2.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.3)
